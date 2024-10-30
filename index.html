@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Pisos e Azulejos</title>
+</head>
+<body>
+    <h2>Calculadora de Pisos e Azulejos</h2>
+    <form id="calcForm">
+        <label for="larguraComodo">Largura do Cômodo (m):</label>
+        <input type="number" id="larguraComodo" step="0.01" required><br>
+
+        <label for="comprimentoComodo">Comprimento do Cômodo (m):</label>
+        <input type="number" id="comprimentoComodo" step="0.01" required><br>
+
+        <label for="larguraPiso">Largura do Piso/Azulejo (m):</label>
+        <input type="number" id="larguraPiso" step="0.01" required><br>
+
+        <label for="comprimentoPiso">Comprimento do Piso/Azulejo (m):</label>
+        <input type="number" id="comprimentoPiso" step="0.01" required><br>
+
+        <label for="margemExtra">Porcentagem de Margem Extra (%):</label>
+        <input type="number" id="margemExtra" step="0.01" placeholder="Opcional"><br><br>
+
+        <button type="button" onclick="calcular()">Calcular Quantidade</button>
+    </form>
+
+    <div id="resultado"></div>
+
+    <script>
+        function calcular() {
+            const larguraComodo = parseFloat(document.getElementById("larguraComodo").value);
+            const comprimentoComodo = parseFloat(document.getElementById("comprimentoComodo").value);
+            const larguraPiso = parseFloat(document.getElementById("larguraPiso").value);
+            const comprimentoPiso = parseFloat(document.getElementById("comprimentoPiso").value);
+            const margemExtra = parseFloat(document.getElementById("margemExtra").value || 0);
+
+            fetch('calcular.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    larguraComodo,
+                    comprimentoComodo,
+                    larguraPiso,
+                    comprimentoPiso,
+                    margemExtra
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("resultado").innerText = `Quantidade necessária: ${data.quantidadeTotal} peças`;
+            })
+            .catch(error => console.error('Erro:', error));
+        }
+    </script>
+</body>
+</html>
